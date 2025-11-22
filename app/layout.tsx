@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Nir Finance - Strategy-first DeFi",
-  description: "Nir Finance — clarity-first strategy tooling.",
+  title: "Fluid Yield",
+  description: "Fluid Yield — clarity-first strategy tooling.",
   icons: {
     icon: "/favicon.ico",
     shortcut: "/nirLogoWhite.png",

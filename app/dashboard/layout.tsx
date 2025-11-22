@@ -2,8 +2,8 @@
 
 import type { ReactNode } from "react";
 import { useState } from "react";
-import Sidebar from "../components/layout/Sidebar";
 import Header from "../components/Header";
+import Sidebar from "../components/layout/Sidebar";
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);

@@ -1,0 +1,318 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { decodeEventLog } from "viem";
+import { useAccount, usePublicClient, useWriteContract } from "wagmi";
+
+import ProgressSteps from "@/components/dashboard/ProgressSteps";
+import { Button } from "@/components/ui/button";
+import { StrategyFromAi } from "@/lib/strategy-model";
+import { TOKENS, TokenKey } from "@/lib/tokens";
+import { nirContracts } from "@/lib/contracts";
+import { buildStepsFromAi } from "@/lib/encode-strategy";
+import { useToast } from "@/components/ui/toast-provider";
+
+const STEPS = [
+  { label: "Prompt" },
+  { label: "AI Strategy" },
+  { label: "Deploy to BNB Testnet" },
+];
+
+export default function CreateStrategyPage() {
+  const { address, isConnected } = useAccount();
+  const { writeContractAsync, isPending } = useWriteContract();
+  const publicClient = usePublicClient();
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const [prompt, setPrompt] = useState("");
+  const [aiStrategy, setAiStrategy] = useState<StrategyFromAi | null>(null);
+  const [generating, setGenerating] = useState(false);
+  const [deploying, setDeploying] = useState(false);
+
+  const hasStrategy = !!aiStrategy;
+
+  const handleGenerate = async () => {
+    if (!prompt.trim()) return;
+
+    setGenerating(true);
+    setAiStrategy(null);
+
+    try {
+      const res = await fetch("/api/ai/strategy", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error ?? "Failed to generate strategy");
+      }
+      const data = (await res.json()) as { strategy: StrategyFromAi };
+      setAiStrategy(data.strategy);
+    } catch (e) {
+      const message = e instanceof Error ? e.message : "Unexpected error";
+      toast({ description: message, variant: "error" });
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  const handleDeploy = async () => {
+    if (!aiStrategy) return;
+
+    const tokenKey = aiStrategy.inputToken as TokenKey;
+    const token = TOKENS[tokenKey];
+
+    if (!token) {
+      toast({
+        description: "AI returned an unsupported input token. Try again.",
+        variant: "error",
+      });
+      return;
+    }
+
+    if (!isConnected || !address) {
+      toast({
+        description:
+          "Connect your wallet on BNB testnet to deploy the strategy.",
+        variant: "error",
+      });
+      return;
+    }
+
+    setDeploying(true);
+
+    try {
+      const steps = buildStepsFromAi(aiStrategy);
+
+      const hash = await writeContractAsync({
+        abi: nirContracts.strategyVault.abi,
+        address: nirContracts.strategyVault.address,
+        functionName: "createStrategy",
+        args: [aiStrategy.name, token.address, steps],
+      });
+
+      if (publicClient) {
+        const receipt = await publicClient.waitForTransactionReceipt({ hash });
+
+        if (receipt.status === "reverted") {
+          toast({
+            description:
+              "Failed to deploy strategy. Check your wallet and try again.",
+            variant: "error",
+          });
+          return;
+        }
+
+        let vaultStrategyId: number | null = null;
+
+        for (const log of receipt.logs) {
+          if (
+            log.address.toLowerCase() !==
+            nirContracts.strategyVault.address.toLowerCase()
+          ) {
+            continue;
+          }
+
+          try {
+            const decoded = decodeEventLog({
+              abi: nirContracts.strategyVault.abi,
+              data: log.data,
+              topics: log.topics,
+            });
+            console.log("[decoded]: ", decoded);
+
+            if (decoded.eventName === "StrategyCreated") {
+              const id = (decoded.args as unknown as { strategyId: bigint })
+                ?.strategyId;
+              if (id != null) {
+                vaultStrategyId = Number(id);
+                break;
+              }
+            }
+          } catch {
+            // ignore non-matching logs
+          }
+        }
+
+        if (vaultStrategyId != null) {
+          const res = await fetch("/api/strategies/create-from-ai", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              vaultStrategyId,
+              prompt,
+              strategy: aiStrategy,
+            }),
+          });
+
+          if (!res.ok) {
+            throw new Error("Failed to save strategy metadata.");
+          }
+
+          toast({
+            title: "Strategy deployed",
+            description: "Strategy deployed successfully.",
+            variant: "success",
+          });
+          router.push(`/dashboard/strategies/${vaultStrategyId}`);
+        }
+      }
+    } catch {
+      toast({
+        description:
+          "Failed to deploy strategy. Check your wallet and try again.",
+        variant: "error",
+      });
+    } finally {
+      setDeploying(false);
+    }
+  };
+
+  return (
+    <div className="flex min-h-screen flex-col">
+      <main className="flex-1 overflow-y-auto px-4 sm:px-6 md:px-8 lg:px-12 py-6 sm:py-8">
+        <div className="mb-4 sm:mb-8 flex flex-col gap-6 sm:gap-8 lg:flex-row lg:justify-between">
+          <div className="mb-8 sm:mb-12">
+            <h1 className="text-[28px] sm:text-[32px] lg:text-4xl font-semibold text-[#E7FDFF]">
+              Create New Strategy
+            </h1>
+            <p className="mt-3 sm:mt-4 text-[14px] sm:text-[16px] text-[#88AEB1]">
+              Describe the strategy you want. Nir will turn it into executable
+              steps on BNB testnet.
+            </p>
+          </div>
+
+          <Button
+            type="button"
+            variant="ghost"
+            className="rounded-full border border-[#1FE9F7]/30 bg-[#090909] px-8 sm:px-12 lg:px-16 py-4 sm:py-5 lg:py-6 text-xs sm:text-sm font-semibold text-[#1FE9F7] transition hover:text-[#E2FEFF] cursor-pointer w-full sm:w-auto"
+            disabled
+          >
+            Save Draft (coming soon)
+          </Button>
+        </div>
+
+        <div className="mb-8 sm:mb-12 overflow-x-auto">
+          <ProgressSteps
+            steps={STEPS}
+            currentIndex={hasStrategy ? 2 : prompt ? 1 : 0}
+          />
+        </div>
+
+        <section className="rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 shadow-[0_24px_48px_rgba(6,24,26,0.45)] backdrop-blur-sm">
+          <h2 className="mb-6 sm:mb-8 text-xs sm:text-sm text-center font-semibold uppercase tracking-[0.18em] text-[#F2F4F5]">
+            Tell Nir what you want to build
+          </h2>
+
+          <label className="flex flex-col gap-2 sm:gap-3">
+            <span className="text-xs sm:text-sm uppercase tracking-[0.18em] text-[#89A8AA]">
+              Strategy Idea (prompt)
+            </span>
+            <textarea
+              rows={5}
+              className="rounded-xl sm:rounded-2xl border border-[#EDFCFE0F] bg-[#EDFCFE0F] px-4 sm:px-5 py-3 sm:py-4 text-[14px] sm:text-[15px] text-[#CDEFF1] placeholder:text-[#597778] focus:border-[#1FE9F7] focus:outline-none focus:ring-0 resize-none"
+              placeholder="E.g. A medium-risk looping strategy using WBNB as input, swapping into USDT then supplying to Venus, with auto-withdraw to BUSD when markets are volatile."
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+            />
+          </label>
+
+          <div className="mt-6 sm:mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="text-[12px] sm:text-[13px] text-[#88AEB1]">
+              {generating ? (
+                <span>
+                  Computing contract inputs and strategy steps for BNB
+                  testnet...
+                </span>
+              ) : (
+                <span>
+                  Nir will infer tokens, Venus markets, and steps based on your
+                  description.
+                </span>
+              )}
+            </div>
+
+            <Button
+              type="button"
+              variant="default"
+              className="text-xs sm:text-sm font-medium text-[#090909] bg-[#1FE9F7] hover:bg-[#1FE9F7]/80 rounded-lg px-8 sm:px-12 lg:px-16 py-4 sm:py-5 lg:py-6 text-center cursor-pointer w-full sm:w-auto"
+              onClick={handleGenerate}
+              disabled={generating || !prompt.trim()}
+            >
+              {generating ? "Generating..." : "Generate with AI"}
+            </Button>
+          </div>
+
+          {aiStrategy && (
+            <div className="mt-8 sm:mt-10 grid gap-6 sm:gap-8 md:grid-cols-[1.4fr_minmax(0,1fr)] items-start">
+              <div className="space-y-3 sm:space-y-4">
+                <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.18em] text-[#89A8AA]">
+                  AI Strategy Preview
+                </p>
+                <h3 className="text-[18px] sm:text-[20px] font-semibold text-[#F2F4F5]">
+                  {aiStrategy.name}
+                </h3>
+                <p className="text-[13px] sm:text-[14px] leading-6 text-[#CDEFF1]">
+                  {aiStrategy.summary}
+                </p>
+              </div>
+
+              <div className="space-y-3 sm:space-y-4 rounded-2xl border border-[#EDFCFE0F] bg-[#070B0B] px-4 sm:px-5 py-4 sm:py-5">
+                <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.18em] text-[#89A8AA]">
+                  Deployment Details
+                </p>
+                <div className="space-y-1 text-[13px] sm:text-[14px] text-[#E7FDFF]">
+                  <p>
+                    <span className="text-[#89A8AA]">Input Token:</span>{" "}
+                    {aiStrategy.inputToken}
+                  </p>
+                  <p>
+                    <span className="text-[#89A8AA]">Risk:</span>{" "}
+                    {aiStrategy.riskLevel}
+                  </p>
+                  <p>
+                    <span className="text-[#89A8AA]">Steps:</span>{" "}
+                    {aiStrategy.steps.length}
+                  </p>
+                </div>
+
+                <Button
+                  type="button"
+                  variant="default"
+                  className="mt-2 text-xs sm:text-sm font-medium text-[#090909] bg-[#1FE9F7] hover:bg-[#1FE9F7]/80 rounded-lg px-6 sm:px-10 py-3 sm:py-4 text-center cursor-pointer w-full"
+                  onClick={handleDeploy}
+                  disabled={deploying || isPending}
+                >
+                  {deploying || isPending
+                    ? "Deploying to BNB Testnet..."
+                    : "Deploy Strategy"}
+                </Button>
+              </div>
+
+              <div className="md:col-span-2 mt-4 sm:mt-6">
+                <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.18em] text-[#89A8AA] mb-2">
+                  Execution Steps
+                </p>
+                <ol className="space-y-1 text-[13px] sm:text-[14px] text-[#F2F4F5]">
+                  {aiStrategy.steps.map((step, index) => (
+                    <li key={index}>
+                      <span className="text-[#89A8AA] mr-2">{index + 1}.</span>
+                      <span className="uppercase text-[11px] tracking-[0.16em] text-[#5efbff] mr-2">
+                        {step.action}
+                      </span>
+                      {step.label ?? "Generated step"}
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </div>
+          )}
+        </section>
+      </main>
+    </div>
+  );
+}
