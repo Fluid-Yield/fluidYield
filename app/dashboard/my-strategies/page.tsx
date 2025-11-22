@@ -1,11 +1,11 @@
 import { cookies } from "next/headers";
 
-import { MyStrategiesClient } from "@/components/dashboard/MyStrategiesClient";
 import { ANON_USER_COOKIE } from "@/lib/constants";
 import {
   getUserStrategiesByUserId,
   toStrategyCardProps,
 } from "@/lib/strategies-service";
+import { MyStrategiesClient } from "@/app/components/dashboard/MyStrategiesClient";
 
 export default async function MyStrategiesPage() {
   const cookieStore = await cookies();

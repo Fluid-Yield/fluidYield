@@ -12,9 +12,9 @@ interface ProgressStepsProps {
 }
 
 const baseCircleClasses =
-  "grid h-12 w-12 place-items-center rounded-full border border-[#1FE9F7]/15 bg-[rgba(6,15,16,0.9)] text-[16px] font-semibold text-[#9ECACC] shadow-[inset_0_0_12px_rgba(31,233,247,0.08)] transition-all";
+  "grid h-12 w-12 place-items-center rounded-full border border-accent/15 bg-accent/5 text-[16px] font-semibold text-muted-foreground shadow-sm transition-all";
 const activeCircleClasses =
-  "border-none text-[#061015] [background:linear-gradient(180deg,#5EFBFF_0%,#1FE9F7_100%)] shadow-[0_8px_18px_rgba(31,233,247,0.45),inset_0_0_12px_rgba(255,255,255,0.18)]";
+  "border-none text-white bg-accent shadow-[0_8px_18px_rgba(194,24,91,0.3)]";
 
 const ProgressSteps = ({ steps, currentIndex }: ProgressStepsProps) => {
   return (
@@ -34,15 +34,15 @@ const ProgressSteps = ({ steps, currentIndex }: ProgressStepsProps) => {
                 {index + 1}
               </span>
               <span
-                className={`text-[13px] text-[#7EA3A6] ${
-                  isActive ? "text-[#5EFBFF]" : ""
+                className={`text-[13px] text-muted-foreground ${
+                  isActive ? "text-accent font-medium" : ""
                 }`}
               >
                 {step.label}
               </span>
             </div>
             {!isLast && (
-              <span className="h-px flex-1 bg-[linear-gradient(90deg,rgba(31,233,247,0.28),transparent)]" />
+              <span className="h-px flex-1 bg-[linear-gradient(90deg,rgba(194,24,91,0.2),transparent)]" />
             )}
           </Fragment>
         );

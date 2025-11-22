@@ -84,8 +84,8 @@
   --background: #ffffff;
   --foreground: #454545;
   --muted-foreground: #6d6d6d;
-  --accent: #f52660;
-  --accent-foreground: #dd406c;
+  --accent: #c2185b;
+  --accent-foreground: #d81b60;
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
@@ -280,6 +280,6 @@
 
 @layer utilities {
   .shadow-glow-pink {
-    box-shadow: inset 0 0 14px rgba(245, 38, 96, 0.14);
+    box-shadow: inset 0 0 14px rgba(194, 24, 91, 0.12);
   }
 }

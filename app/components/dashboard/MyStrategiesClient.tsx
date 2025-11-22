@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
-
-import StrategyCard from "@/components/dashboard/StrategyCard";
-import SegmentedTabs from "@/components/dashboard/SegmentedTabs";
-import { Button } from "@/components/ui/button";
 import type { StrategyCardProps } from "@/app/types/strategy-types";
+import StrategyCard from "@/app/components/dashboard/StrategyCard";
+import SegmentedTabs from "@/app/components/dashboard/SegmentedTabs";
+import { Button } from "@/app/components/ui/button";
 
 const TABS = [
   { label: "Joined Strategies", value: "joined" },
@@ -40,7 +39,7 @@ export function MyStrategiesClient({
 
           <Button
             variant="ghost"
-            className="rounded-full border border-[#1FE9F7]/30 bg-[#090909] px-8 sm:px-12 lg:px-16 py-4 sm:py-5 lg:py-6 text-xs sm:text-sm font-semibold text-[#1FE9F7] transition hover:text-[#E2FEFF] w-full sm:w-auto"
+            className="rounded-lg border border-accent/30 bg-accent/5 px-8 sm:px-12 lg:px-16 py-4 sm:py-5 lg:py-6 text-xs sm:text-sm font-semibold text-accent transition hover:text-accent-foreground hover:bg-accent/10 w-full sm:w-auto"
             disabled
           >
             Export (coming soon)

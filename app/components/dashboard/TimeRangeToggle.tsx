@@ -24,7 +24,7 @@ const TimeRangeToggle = ({
   };
 
   return (
-    <div className="inline-flex items-center gap-1 rounded-full bg-[#0B1110] px-1 ">
+    <div className="inline-flex items-center gap-0 rounded border border-border bg-muted/30 p-1">
       {TIME_RANGES.map((range) => {
         const isActive = active === range;
         return (
@@ -33,19 +33,10 @@ const TimeRangeToggle = ({
             type="button"
             onClick={() => handleSelect(range)}
             className={clsx(
-              "relative min-w-[45px] rounded-full px-0 py-3 text-sm font-semibold tracking-wide text-[#7F9997] transition-all duration-150",
-              "hover:text-[#B6D7CF]",
-              isActive &&
-                "text-[#49FF9C] shadow-[0_0_0_1px_rgba(73,255,156,0.45)] before:pointer-events-none before:absolute before:inset-0 before:rounded-full before:border before:border-[#49FF9C]/40 before:opacity-90 before:content-['']"
+              "relative min-w-[40px] rounded px-3 py-2 text-sm font-medium text-muted-foreground transition-colors",
+              "hover:text-foreground",
+              isActive && "text-accent bg-background shadow-sm"
             )}
-            style={
-              isActive
-                ? {
-                    background:
-                      "radial-gradient(100% 100% at 50% 50%, rgba(73, 255, 156, 0.18) 0%, rgba(11, 17, 16, 0) 100%)",
-                  }
-                : undefined
-            }
           >
             {range}
           </button>

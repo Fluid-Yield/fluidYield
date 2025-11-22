@@ -39,9 +39,9 @@ const TERTIARY_ITEMS = [
 ];
 
 const baseLinkClasses =
-  "relative flex items-center gap-3 rounded-lg px-4 py-3 text-[15px] font-medium text-[var(--app-text)]/90 transition-all duration-150 ease-out hover:text-[var(--app-text)]";
+  "relative flex items-center gap-3 rounded-lg px-4 py-3 text-[15px] font-medium text-foreground/90 transition-all duration-150 ease-out hover:text-foreground";
 const activeLinkClasses =
-  "text-[#1FE9F7] bg-transparent border border-[#1FE9F7]/40 shadow-[0_0_20px_rgba(31,233,247,0.3)]";
+  "text-accent bg-accent/5 border border-accent/30 shadow-[0_0_20px_rgba(194,24,91,0.2)]";
 
 interface SidebarProps {
   isOpen?: boolean;
@@ -98,7 +98,7 @@ const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
       {/* Mobile Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-40 bg-[var(--app-overlay)] backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
           onClick={onClose}
         />
       )}
@@ -106,10 +106,10 @@ const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
       {/* Sidebar */}
       <aside
         className={clsx(
-          "fixed lg:sticky top-0 z-50 flex h-screen w-[232px] shrink-0 flex-col overflow-y-auto bg-[var(--app-bg)] border-r border-[#1a1a1a] px-6 py-6 sm:py-8 transition-transform duration-300 ease-in-out",
+          "fixed lg:sticky top-0 z-50 flex h-screen w-[232px] shrink-0 flex-col overflow-y-auto bg-background border-r border-border px-6 py-6 sm:py-8 transition-transform duration-300 ease-in-out",
           isOpen
-            ? "translate-x-0 text-[var(--app-text)]"
-            : "-translate-x-full lg:translate-x-0 text-[var(--app-text)]"
+            ? "translate-x-0 text-foreground"
+            : "-translate-x-full lg:translate-x-0 text-foreground"
         )}
       >
         {/* Mobile Close Button */}
@@ -124,7 +124,7 @@ const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
 
           <button
             onClick={onClose}
-            className="flex items-center justify-end text-[var(--app-text-muted)] hover:text-[var(--app-text)] transition-colors"
+            className="flex items-center justify-end text-muted-foreground hover:text-foreground transition-colors"
           >
             <X size={24} />
           </button>
@@ -136,7 +136,7 @@ const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
         </nav>
 
         {/* Separator */}
-        <div className="h-px bg-[var(--app-text)]/10 my-2" />
+        <div className="h-px bg-border my-2" />
 
         {/* Secondary Navigation */}
         <nav className="flex flex-col gap-2 my-8">
@@ -144,7 +144,7 @@ const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
         </nav>
 
         {/* Separator */}
-        <div className="h-px bg-[var(--app-text)]/10 my-2" />
+        <div className="h-px bg-border my-2" />
 
         {/* Tertiary Navigation */}
         <nav className="flex flex-col gap-2 mt-8">

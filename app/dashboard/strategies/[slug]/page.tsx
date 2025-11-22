@@ -3,13 +3,13 @@ import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 
-import StrategyCard from "@/components/dashboard/StrategyCard";
-import { ExecuteStrategyButton } from "@/components/dashboard/ExecuteStrategyButton";
 import {
   getAllStrategiesWithAi,
   getStrategyDetail,
   toStrategyCardProps,
 } from "@/lib/strategies-service";
+import { ExecuteStrategyButton } from "@/app/components/dashboard/ExecuteStrategyButton";
+import StrategyCard from "@/app/components/dashboard/StrategyCard";
 
 interface StrategyPageProps {
   params: Promise<{ slug: string }>;
@@ -43,13 +43,17 @@ export default async function StrategyDetailPage({
       .map(toStrategyCardProps)
   );
 
-  const creatorShort = `${overview.curator.slice(0, 6)}...${overview.curator.slice(-4)}`;
+  const creatorShort = `${overview.curator.slice(
+    0,
+    6
+  )}...${overview.curator.slice(-4)}`;
   const type = ai ? "AI Strategy" : "On-chain Strategy";
   const risk = ai?.riskLevel
     ? ai.riskLevel.charAt(0).toUpperCase() + ai.riskLevel.slice(1)
     : "Unknown";
   const description =
-    ai?.summary || ai?.description ||
+    ai?.summary ||
+    ai?.description ||
     "On-chain strategy created in the Nir vault.";
 
   return (

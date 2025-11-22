@@ -29,12 +29,12 @@ const FeaturedStrategy = ({
   href,
 }: FeaturedStrategyProps) => {
   return (
-    <div className="grid grid-cols-12 gap-8 rounded-[36px] border border-[#1FE9F7]/15 p-10 text-[#DAF9FB] shadow-[0_32px_64px_rgba(8,34,37,0.45),inset_0_0_18px_rgba(31,233,247,0.1)] [background:radial-gradient(160%_140%_at_40%_0%,rgba(31,233,247,0.32),rgba(7,15,16,0.95)),rgba(8,18,19,0.98)]">
+    <div className="grid grid-cols-12 gap-8 rounded-2xl border border-accent/20 p-10 text-foreground shadow-[0_8px_24px_rgba(194,24,91,0.12)] bg-background">
       <div className="col-span-12 flex flex-col gap-4 lg:col-span-5">
-        <h3 className="text-3xl font-semibold tracking-[0.01em] text-[#F2FEFF]">
+        <h3 className="text-3xl font-semibold tracking-[0.01em] text-foreground">
           {title}
         </h3>
-        <div className="flex flex-wrap items-center gap-4 text-[15px] text-[#87B0B3]">
+        <div className="flex flex-wrap items-center gap-4 text-[15px] text-muted-foreground">
           <span className="flex items-center gap-2">
             <Flame size={18} strokeWidth={1.4} />
             Creator: {creator}
@@ -49,7 +49,12 @@ const FeaturedStrategy = ({
           </span>
         </div>
         <button>
-          <a href={href}>Join Strategy</a>
+          <a
+            href={href}
+            className="bg-accent text-white px-6 py-3 rounded-lg hover:bg-accent/90 transition"
+          >
+            Join Strategy
+          </a>
         </button>
       </div>
 
@@ -59,23 +64,23 @@ const FeaturedStrategy = ({
         <MetricChip title="Performance" value={performance} accent />
       </div>
 
-      <div className="col-span-12 flex h-36 items-end gap-1.5 rounded-[24px] border border-[#1FE9F7]/20 bg-[rgba(7,18,19,0.8)] p-6 lg:col-span-4">
+      <div className="col-span-12 flex h-36 items-end gap-1.5 rounded-xl border border-accent/20 bg-accent/5 p-6 lg:col-span-4">
         {BAR_HEIGHTS.map((height, index) => (
           <span
             key={`featured-bar-${index}`}
             style={{ height }}
-            className="flex-1 rounded-t-full bg-[linear-gradient(180deg,#5EFBFF_0%,rgba(31,233,247,0.05)_100%)] opacity-90"
+            className="flex-1 rounded-t-full bg-[linear-gradient(180deg,var(--accent)_0%,rgba(194,24,91,0.15)_100%)] opacity-90"
           />
         ))}
       </div>
 
-      <div className="col-span-12 flex flex-col gap-3 text-[15px] leading-7 text-[#8CB5B8] lg:col-span-5">
+      <div className="col-span-12 flex flex-col gap-3 text-[15px] leading-7 text-muted-foreground lg:col-span-5">
         <p>{description}</p>
         <div>
-          <strong className="text-xs uppercase tracking-[0.14em] text-[#5EFBFF]">
+          <strong className="text-xs uppercase tracking-[0.14em] text-accent">
             Steps
           </strong>
-          <ol className="mt-3 space-y-1 text-[#9CC8CB]">
+          <ol className="mt-3 space-y-1 text-foreground">
             {steps.map((step, index) => (
               <li key={step}>
                 {index + 1}. {step}

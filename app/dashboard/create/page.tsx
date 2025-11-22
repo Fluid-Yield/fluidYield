@@ -4,14 +4,13 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { decodeEventLog } from "viem";
 import { useAccount, usePublicClient, useWriteContract } from "wagmi";
-
-import ProgressSteps from "@/components/dashboard/ProgressSteps";
-import { Button } from "@/components/ui/button";
+import ProgressSteps from "@/app/components/dashboard/ProgressSteps";
 import { StrategyFromAi } from "@/lib/strategy-model";
 import { TOKENS, TokenKey } from "@/lib/tokens";
-import { nirContracts } from "@/lib/contracts";
 import { buildStepsFromAi } from "@/lib/encode-strategy";
-import { useToast } from "@/components/ui/toast-provider";
+import { useToast } from "@/app/components/ui/toast-provider";
+import { Button } from "@/app/components/ui/button";
+import { fyContracts } from "@/lib/contracts";
 
 const STEPS = [
   { label: "Prompt" },
@@ -89,8 +88,8 @@ export default function CreateStrategyPage() {
       const steps = buildStepsFromAi(aiStrategy);
 
       const hash = await writeContractAsync({
-        abi: nirContracts.strategyVault.abi,
-        address: nirContracts.strategyVault.address,
+        abi: fyContracts.strategyVault.abi,
+        address: fyContracts.strategyVault.address,
         functionName: "createStrategy",
         args: [aiStrategy.name, token.address, steps],
       });
@@ -112,14 +111,14 @@ export default function CreateStrategyPage() {
         for (const log of receipt.logs) {
           if (
             log.address.toLowerCase() !==
-            nirContracts.strategyVault.address.toLowerCase()
+            fyContracts.strategyVault.address.toLowerCase()
           ) {
             continue;
           }
 
           try {
             const decoded = decodeEventLog({
-              abi: nirContracts.strategyVault.abi,
+              abi: fyContracts.strategyVault.abi,
               data: log.data,
               topics: log.topics,
             });

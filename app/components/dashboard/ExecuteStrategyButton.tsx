@@ -215,26 +215,26 @@ export function ExecuteStrategyButton({
     <div className="flex flex-col items-stretch gap-3 w-full sm:w-auto">
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="flex flex-col gap-1 w-full sm:w-40">
-          <label className="text-[11px] sm:text-[12px] text-[#ADBEBF]">
+          <label className="text-[11px] sm:text-[12px] text-muted-foreground">
             Amount
           </label>
           <input
             type="text"
             value={amountInput}
             onChange={(e) => setAmountInput(e.target.value)}
-            className="w-full rounded-md border border-[#EDFCFE0F] bg-[#070B0B] px-3 py-2 text-[13px] sm:text-[14px] text-[#F2F4F5] outline-none focus:border-[#1FE9F7]"
+            className="w-full rounded-md border border-accent/15 bg-accent/5 px-3 py-2 text-[13px] sm:text-[14px] text-foreground outline-none focus:border-accent"
             placeholder="0.0"
           />
         </div>
 
         <div className="flex flex-col gap-1 w-full sm:w-40">
-          <label className="text-[11px] sm:text-[12px] text-[#ADBEBF]">
+          <label className="text-[11px] sm:text-[12px] text-muted-foreground">
             Slippage
           </label>
           <select
             value={slippage}
             onChange={(e) => setSlippage(e.target.value as SlippageOption)}
-            className="w-full rounded-md border border-[#EDFCFE0F] bg-[#070B0B] px-3 py-2 text-[13px] sm:text-[14px] text-[#F2F4F5] outline-none focus:border-[#1FE9F7]"
+            className="w-full rounded-md border border-accent/15 bg-accent/5 px-3 py-2 text-[13px] sm:text-[14px] text-foreground outline-none focus:border-accent"
           >
             <option value="LOW">Low (0.5%)</option>
             <option value="MEDIUM">Medium (1%)</option>
@@ -247,7 +247,7 @@ export function ExecuteStrategyButton({
         <Button
           type="button"
           variant="outline"
-          className="bg-[#1FE9F7] text-[#090909] px-6 sm:px-12 py-4 sm:py-5 rounded-md border-none outline-none hover:bg-[#1FE9F7]/80 cursor-pointer text-sm sm:text-base w-full sm:w-auto"
+          className="bg-accent text-white px-6 sm:px-12 py-4 sm:py-5 rounded-md border-none outline-none hover:bg-accent/90 cursor-pointer text-sm sm:text-base w-full sm:w-auto shadow-sm"
           onClick={handleJoin}
           disabled={joinDisabled}
         >
@@ -258,7 +258,7 @@ export function ExecuteStrategyButton({
           <Button
             type="button"
             variant="outline"
-            className="px-6 sm:px-8 py-4 sm:py-5 rounded-md border border-[#EDFCFE0F] bg-[#070B0B] text-[13px] sm:text-[14px] text-[#F2F4F5] hover:bg-[#070B0B]/80 cursor-pointer w-full sm:w-auto"
+            className="px-6 sm:px-8 py-4 sm:py-5 rounded-md border border-accent/15 bg-accent/5 text-[13px] sm:text-[14px] text-foreground hover:bg-accent/10 cursor-pointer w-full sm:w-auto"
             onClick={handleExit}
             disabled={exitDisabled}
           >
@@ -268,7 +268,7 @@ export function ExecuteStrategyButton({
       </div>
 
       {address && (
-        <div className="text-[11px] sm:text-[12px] text-[#ADBEBF]">
+        <div className="text-[11px] sm:text-[12px] text-muted-foreground">
           {positionLoading ? (
             "Loading current position..."
           ) : hasPosition && formattedPositionAmount && positionToken ? (
