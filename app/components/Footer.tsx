@@ -1,5 +1,5 @@
 import Image from "next/image";
-import FY_logo from "@/public/nirLogoWhite.png";
+import FY_logo from "@/public/fy-logo.png";
 
 export default function Footer() {
   return (

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import FY_logo from "@/public/nirLogoWhite.png";
+import FY_logo from "@/public/fy-logo.png";
 import Footer from "./components/Footer";
 
 export default function Home() {
@@ -27,7 +27,7 @@ export default function Home() {
         <div className="mx-auto max-w-6xl py-12 sm:py-18 lg:py-22">
           {/* Brand row */}
           <div className="mx-auto mb-6 sm:mb-8 flex w-full max-w-6xl items-center justify-between">
-            <div className="flex items-center gap-3 animate-fade-up">
+            <div className="flex items-center  animate-fade-up">
               <Image
                 src={FY_logo}
                 alt=" Fluid Yield"
@@ -35,7 +35,7 @@ export default function Home() {
                 height={40}
                 className="w-8 h-8 sm:w-10 sm:h-10"
               />
-              <span className="text-sm translate-y-2 sm:text-base text-accent-foreground">
+              <span className="text-sm font-bold sm:text-base text-accent-foreground">
                 Fluid Yield
               </span>
             </div>

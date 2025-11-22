@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { X } from "lucide-react";
+import FY_logo from "@/public/fy-logo.png";
 
 const PRIMARY_ITEMS = [
   { label: "Explore", href: "/dashboard", iconSrc: "/icons/search.svg" },
@@ -113,14 +114,27 @@ const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
       >
         {/* Mobile Close Button */}
         <div className="flex items-center justify-between mb-6 lg:hidden">
-          <Image
+          {/* <Image
             src="/nirLogoWhite.png"
             alt="logo"
             width={46}
             height={46}
             className="w-8 h-8 sm:w-[46px] sm:h-[46px] cursor-pointer"
-          />
-
+          /> */}
+          <div className="mx-auto mb-6 sm:mb-8 flex w-full max-w-6xl items-center justify-between">
+            <div className="flex items-center  animate-fade-up">
+              <Image
+                src={FY_logo}
+                alt=" Fluid Yield"
+                width={40}
+                height={40}
+                className="w-8 h-8 sm:w-10 sm:h-10"
+              />
+              <span className="text-sm font-bold sm:text-base text-accent-foreground">
+                Fluid Yield
+              </span>
+            </div>
+          </div>
           <button
             onClick={onClose}
             className="flex items-center justify-end text-muted-foreground hover:text-foreground transition-colors"

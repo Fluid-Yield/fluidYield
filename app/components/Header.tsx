@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "./ui/select";
 
-import nir_logo from "@/public/nirLogoWhite.png";
+import FY_logo from "@/public/fy-logo.png";
 import ConnectWallet from "./ConnectWallet";
 
 interface HeaderProps {
@@ -30,18 +30,20 @@ const Header = ({ onMenuClick }: HeaderProps) => {
         >
           <Menu size={24} />
         </button>
-        <Link
-          href="/"
-          className="cursor-pointer shrink-0 outline-none border-none focus:outline-none focus:ring-0 focus:border-none"
-        >
-          <Image
-            src={nir_logo}
-            alt="logo"
-            width={70}
-            height={56}
-            className="w-8 h-8 sm:w-[76px] sm:h-[50px]"
-          />
-        </Link>
+        <div className="mx-auto mb-6 sm:mb-8 flex w-full max-w-6xl items-center justify-between">
+          <Link href="/" className="flex items-center  animate-fade-up">
+            <Image
+              src={FY_logo}
+              alt=" Fluid Yield"
+              width={40}
+              height={40}
+              className="w-8 h-8 sm:w-10 sm:h-10"
+            />
+            <span className="text-sm font-bold sm:text-base text-accent-foreground">
+              Fluid Yield
+            </span>
+          </Link>
+        </div>
       </div>
 
       <div className="hidden md:flex items-center gap-2 flex-1 max-w-2xl">
