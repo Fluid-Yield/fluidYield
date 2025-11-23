@@ -25,10 +25,6 @@ abstract contract Constants {
     address internal constant USDT = 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913;
     address internal constant USDT0 = 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913;
 
-    // Oracle
-    address internal constant ORACLE = 0x333Cd307bd0d8fDB3c38b14eacC4072FF548176B; //TODO: deploy and replace
-    address internal constant ENGINE = 0xe7D11A96aB3813D8232a0711D4fa4f60E2f50B19; //TODO: Deploy and replace
-
     // Kinetic Basic contracts
     address internal constant COMPTROLLER = 0x0f8f2f0fe32D8BdEceCC2eA966cd30b155f62B6d; // flare testnet
     address internal constant SFLR_UNWRAPPER = 0x1382cFf3CeE10D283DccA55A30496187759e4cAf;
