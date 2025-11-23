@@ -486,7 +486,8 @@ contract Strategy is Ownable2Step {
             return actionType == IConnector.ActionType.SUPPLY || actionType == IConnector.ActionType.WITHDRAW
                 || actionType == IConnector.ActionType.BORROW || actionType == IConnector.ActionType.REPAY;
         } else if (connectorType == IConnector.ConnectorType.DEX) {
-            return actionType == IConnector.ActionType.SWAP;
+            return actionType == IConnector.ActionType.SUPPLY || actionType == IConnector.ActionType.WITHDRAW
+                || actionType == IConnector.ActionType.SWAP;
         } else if (connectorType == IConnector.ConnectorType.YIELD) {
             return actionType == IConnector.ActionType.STAKE || actionType == IConnector.ActionType.UNSTAKE
                 || actionType == IConnector.ActionType.CLAIM;
