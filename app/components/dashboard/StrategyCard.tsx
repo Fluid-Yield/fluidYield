@@ -17,8 +17,12 @@ const StrategyCard = ({
 }: StrategyCardProps) => {
   return (
     <article className="flex flex-col border border-border rounded-md bg-background overflow-hidden hover:border-accent/30 transition-colors">
-      <div className="relative h-32 bg-muted/20">
-        <ChartImage />
+      <div className="relative  h-32 bg-muted/20">
+        <img
+          src="/bar.svg"
+          alt="Strategy Card"
+          className="w-full h-full object-cover"
+        />
       </div>
 
       <div className="p-5 flex flex-col gap-4">
